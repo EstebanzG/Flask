@@ -1,220 +1,240 @@
----
 openapi: 3.0.0
+servers: []
+
 info:
-  title: Movie API
   description: This is the API of the Movie service
+  version: "1.0.0"
+  title: Movie API
   contact:
-    email: helene.coullon@imt-atlantique.fr
+    email: esteban.gomez@imt-atlantique.fr
   license:
     name: GPL v3
-    url: https://www.gnu.org/licenses/gpl-3.0.en.html
-  version: 1.0.0
-servers:
-- url: https://virtserver.swaggerhub.com/UE-archi-distribuees/Movie/1.0.0
-  description: SwaggerHub API Auto Mocking
+    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
 tags:
-- name: admins
-  description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+
 paths:
   /:
     get:
       tags:
-      - developers
+        - developers
       summary: home page of the service
+      operationId: home
       description: |
         Nothing to do
-      operationId: home
       responses:
-        "200":
+        '200':
           description: welcome message
           content:
             text/html:
               schema:
                 type: string
-                example: <h1>Test</h1>
-  /json:
+                example: "<h1 style='color:blue'>Welcome to the Movie service!</h1>"
+
+  /template:
     get:
       tags:
-      - developers
-      summary: get the full JSON database
+        - developers
+      summary: template example
+      operationId: template
       description: |
         Nothing to do
-      operationId: get_json
       responses:
-        "200":
-          description: full JSON
+        '200':
+          description: HTML Template
           content:
-            application/json:
+            text/html:
               schema:
-                $ref: '#/components/schemas/MovieID'
+                type: string
+                example: "This is my HTML template for Movie service"
+
+
+  /json:
+      get:
+        tags:
+          - developers
+        summary: get the full JSON database
+        operationId: get_json
+        description: |
+          Nothing to do
+        responses:
+          '200':
+            description: full JSON
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AllMovies'
 
   /movies/{movieid}:
     get:
       tags:
-      - developers
+        - developers
       summary: get the movie by its id
-      description: |
-        By passing in the appropriate options, you can get info of a Movie
       operationId: get_movie_byid
+      description: |
+        By passing in the appropriate options, 
+        you can get info of a Movie
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          maximum: 1
-          minimum: 1
-          type: string
+        - name: movieid
+          in: path
+          required: true
+          description: Movie ID.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
       responses:
-        "200":
+        '200':
           description: Movie description
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovieItem'
-        "400":
+        '400':
           description: bad input parameter
     post:
       tags:
-      - admins
+        - admins
       summary: add a movie item
-      description: Adds a movie to the system
       operationId: create_movie
+      description: Adds a movie to the system
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          maximum: 1
-          minimum: 1
-          type: string
-      requestBody:
-        description: Inventory item to add
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MovieItem'
+        - name: movieid
+          in: path
+          required: true
+          description: Movie ID.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
       responses:
-        "200":
+        '200':
           description: Movie created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovieItem'
-        "409":
+        '409':
           description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieItem'
+        description: Inventory item to add
     delete:
       tags:
-      - admins
+        - admins
       summary: delete a movie item
-      description: Adds a movie to the system
-      operationId: del_movie
+      operationId: delete_movie
+      description: Deletes a movie to the system
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          maximum: 1
-          minimum: 1
-          type: string
+        - name: movieid
+          in: path
+          required: true
+          description: Movie ID.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
       responses:
-        "200":
-          description: item deleted
-        "400":
-          description: ID not found
-  /titles:
-    get:
-      tags:
-      - developers
-      summary: get the movie by its title
-      description: |
-        By passing in the appropriate options, you can get Movie info
-      operationId: get_movie_bytitle
-      parameters:
-      - name: title
-        in: query
-        description: pass a title
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 1
-          minimum: 1
-          type: string
-      responses:
-        "200":
-          description: Movie item
+        '200':
+          description: Movie deleted
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovieItem'
-        "400":
+        '409':
           description: bad input parameter
-  /movies/{movieid}/{rate}:
-    put:
+
+
+  /moviesbytitle:
+    get:
       tags:
-      - admins
-      summary: update a movie rate
-      description: update the rating of a movie
-      operationId: update_movie_rating
+        - developers
+      summary: get the movie by its name
+      operationId: get_movie_by_name
+      description: |
+        By passing in the appropriate options, 
+        you can get info of a Movie
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          maximum: 1
-          minimum: 1
-          type: string
-      - name: rate
-        in: path
-        description: Movie rating.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          maximum: 10
-          minimum: 0
-          type: integer
+        - name: movietitle
+          in: query
+          required: true
+          description: Movie title.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
       responses:
-        "200":
-          description: rate updated
-        "400":
-          description: movie ID not found
+        '200':
+          description: Movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieItem'
+        '400':
+          description: bad input parameter
+
+  /moviesbyrate:
+    get:
+      tags:
+        - developers
+      summary: get the movie by its rate
+      operationId: get_movie_by_rate
+      description: |
+        By passing in the appropriate options, 
+        you can get info of Movies
+      parameters:
+        - name: movierate
+          in: query
+          required: true
+          description: Movie rate.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
+      responses:
+        '200':
+          description: Movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieItem'
+        '400':
+          description: bad input parameter
 components:
   schemas:
-    MovieID:
-      required:
-      - id
+    AllMovies:
       type: object
+      required:
+        - movies
       properties:
-        id:
-          $ref: '#/components/schemas/MovieItem'
+        movies:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/MovieItem'
     MovieItem:
-      required:
-      - director
-      - rating
-      - title
       type: object
+      required:
+        - title
+        - rating
+        - director
+        - id
       properties:
         title:
           type: string
           example: The Martian
         rating:
-          type: string
-          example: "7"
+          type: integer
+          example: 7
         director:
           type: string
           example: Paul McGuigan
+        id:
+          type: string
+          example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
