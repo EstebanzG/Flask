@@ -111,6 +111,9 @@ paths:
                 $ref: '#/components/schemas/BookingsUser'
         "409":
           description: an existing item already exists
+        #on a ajouté une erreur au cas ou l'utilisateur est inconnu
+        "404":
+          description: User not exists
 components:
   schemas:
     AllBookings:
