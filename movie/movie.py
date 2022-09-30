@@ -31,7 +31,7 @@ def get_movie_byid(movieid):
         if str(movie["id"]) == str(movieid):
             res = make_response(jsonify(movie),200)
             return res
-    return make_response(jsonify({"error":"Movie ID not found"}),400)
+    return make_response(jsonify({"error":"Movie ID not found, you should create a movie by '/movies/<movieid>' post route."}),400)
 
 @app.route("/moviesbytitle", methods=['GET'])
 def get_movie_bytitle():
@@ -43,7 +43,7 @@ def get_movie_bytitle():
                 json = movie
 
     if not json:
-        res = make_response(jsonify({"error":"movie title not found"}),400)
+        res = make_response(jsonify({"error": "movie title not found, you should create a movie by '/movies/<movieid>' post route"}), 400)
     else:
         res = make_response(jsonify(json),200)
     return res
@@ -58,7 +58,7 @@ def get_movie_byrate():
                 json.append(movie)
 
     if not json:
-        res = make_response(jsonify({"error":"movie with this rate not found"}),400)
+        res = make_response(jsonify({"error":"movie with this rate not found, you should check movies by '/json' get route"}),400)
     else:
         res = make_response(jsonify(json),200)
     return res
@@ -66,13 +66,11 @@ def get_movie_byrate():
 @app.route("/movies/<movieid>", methods=['POST'])
 def create_movie(movieid):
     req = request.get_json()
-
     for movie in movies:
         if str(movie["id"]) == str(movieid):
-            return make_response(jsonify({"error":"movie ID already exists"}),409)
-
+            return make_response(jsonify({"error":"an existing item already exists"}),409)
     movies.append(req)
-    res = make_response(jsonify({"message":"movie added"}),200)
+    res = make_response(jsonify(req),200)
     return res
 
 @app.route("/movies/<movieid>/<rate>", methods=['PUT'])
@@ -83,17 +81,17 @@ def update_movie_rating(movieid, rate):
             res = make_response(jsonify(movie),200)
             return res
 
-    res = make_response(jsonify({"error":"movie ID not found"}),201)
+    res = make_response(jsonify({"error":"movie ID not found, you should check movies by '/json' get route"}),200)
     return res
 
 @app.route("/movies/<movieid>", methods=['DELETE'])
-def del_movie(movieid):
+def delete_movie(movieid):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movies.remove(movie)
             return make_response(jsonify(movie),200)
 
-    res = make_response(jsonify({"error":"movie ID not found"}),400)
+    res = make_response(jsonify({"error":"bad input parameter"}),400)
     return res
 
 if __name__ == "__main__":

@@ -51,7 +51,6 @@ paths:
                 type: string
                 example: "This is my HTML template for Movie service"
 
-
   /json:
       get:
         tags:
@@ -94,7 +93,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovieItem'
         '400':
-          description: bad input parameter
+          description: Movie ID not found (NEW ROUTE).
     post:
       tags:
         - admins
@@ -150,13 +149,48 @@ paths:
         '409':
           description: bad input parameter
 
+  /movies/{movieid}/{rate}:
+    put:
+      tags:
+        - developers
+      summary: update movie rating
+      operationId: update_movie_rating
+      description: |
+        By passing in the appropriate options, 
+        you can change a Movie's rate
+      parameters:
+        - name: movieid
+          in: path
+          required: true
+          description: Movie id.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
+        - name: rate
+          in: path
+          required: true
+          description: Movie new rate.
+          schema:
+            type : number
+            minimum: 1
+            maximum: 1
+      responses:
+        '200':
+          description: Movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieItem'
+        '400':
+          description: bad input parameter (NEW ROUTE)
 
   /moviesbytitle:
     get:
       tags:
         - developers
       summary: get the movie by its name
-      operationId: get_movie_by_name
+      operationId: get_movie_bytitle
       description: |
         By passing in the appropriate options, 
         you can get info of a Movie
@@ -177,14 +211,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovieItem'
         '400':
-          description: bad input parameter
+          description: bad input parameter (NEW ROUTE)
 
   /moviesbyrate:
     get:
       tags:
         - developers
       summary: get the movie by its rate
-      operationId: get_movie_by_rate
+      operationId: get_movie_byrate
       description: |
         By passing in the appropriate options, 
         you can get info of Movies
@@ -194,7 +228,7 @@ paths:
           required: true
           description: Movie rate.
           schema:
-            type : string
+            type : number
             minimum: 1
             maximum: 1
       responses:
@@ -205,7 +239,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovieItem'
         '400':
-          description: bad input parameter
+          description: bad input parameter (NEW ROUTE)
 components:
   schemas:
     AllMovies:
