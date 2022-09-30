@@ -9,13 +9,35 @@ PORT = 3203
 HOST = '0.0.0.0'
 
 with open('{}/databases/users.json'.format("."), "r") as jsf:
-   users = json.load(jsf)["users"]
+    users = json.load(jsf)["users"]
 
-@app.route("/", methods=['GET'])
-def home():
-   return "<h1 style='color:blue'>Welcome to the User service!</h1>"
+@app.route("/bookingsbyuserid/<userid>", methods=['GET'])
+def bookingsbyuserid(userid):
+    for user in users:
+        if str(user["id"]) == str(userid):
+            bookings = requests.get('http://localhost:3201/bookings/' + userid)
+            if bookings.status_code == 200:
+                bookings = bookings.json()
+                return make_response(bookings, 200)
+            return make_response(jsonify({"Error": "User don't have booking"}), 400)
+    return make_response(jsonify({"Error": "user not exist"}), 400)
+@app.route("/bookingsdetailbyuserid/<userid>", methods=['GET'])
+def bookingsdetailbyuserid(userid):
+    for user in users:
+        if str(user["id"]) == str(userid):
+            bookings = requests.get('http://localhost:3201/bookings/' + userid)
+            if bookings.status_code == 200:
+                bookings = bookings.json()
+                for date in bookings["dates"]:
+                    movieDetail = []
+                    for movie in date["movies"]:
+                        movieDetail.append(requests.get('http://localhost:3230/movies/' + movie).json())
+                    date["movies"] = movieDetail
+                return make_response(bookings, 200)
+            return make_response(jsonify({"Error": "User don't have booking"}), 400)
+    return make_response(jsonify({"Error": "User not exist"}), 400)
 
 
 if __name__ == "__main__":
-   print("Server running in port %s"%(PORT))
-   app.run(host=HOST, port=PORT)
+    print("Server running in port %s" % (PORT))
+    app.run(host=HOST, port=PORT)

@@ -1,0 +1,158 @@
+---
+openapi: 3.0.0
+servers: []
+
+info:
+  description: This is the API of the Movie service
+  version: "1.0.0"
+  title: Movie API
+  contact:
+    email: esteban.gomez@imt-atlantique.fr
+  license:
+    name: GPL v3
+    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+
+paths:
+  /bookingsbyuserid/{userid}:
+    get:
+      tags:
+        - developers
+      summary: get the user bookings by the user id
+      operationId: get_user_booking_id
+      description: |
+        By passing in the appropriate options, 
+        you can get info about user booking
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          description: User ID.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
+      responses:
+        '200':
+          description: Booking description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: bad input parameter
+
+  /bookingdetailsuserid/{userid}:
+    get:
+      tags:
+        - developers
+      summary: get the user bookings details by the user id
+      operationId: get_user_booking_details_id
+      description: |
+        By passing in the appropriate options, 
+        you can get info and details about user booking
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          description: User ID.
+          schema:
+            type : string
+            minimum: 1
+            maximum: 1
+      responses:
+        '200':
+          description: Booking description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingDetails'
+        '400':
+          description: bad input parameter
+
+components:
+  schemas:
+    Booking:
+      type: object
+      required:
+        - userid
+        - dates
+      properties:
+        userid:
+          type: string
+          example: chris_rivers
+        dates:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/Dates'
+
+    Dates:
+      type: object
+      required:
+        - date
+        - movies
+      properties:
+        date:
+          type: string
+          example: 20151201
+        movies:
+          type: array
+          items:
+            type: string
+          example:
+            - 267eedb8-0f5d-42d5-8f43-72426b9fb3e6
+            - a8034f44-aee4-44cf-b32c-74cf452aaaae
+
+    BookingDetails:
+      type: object
+      required:
+        - userid
+        - dates
+      properties:
+        userid:
+          type: string
+          example: chris_rivers
+        dates:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/DatesDetails'
+
+    DatesDetails:
+      type: object
+      required:
+        - date
+        - movies
+      properties:
+        date:
+          type: string
+          example: 20151201
+        movies:
+          type: object
+          $ref: '#/components/schemas/Movies'
+
+    Movies:
+      type: object
+      required:
+        - title
+        - rating
+        - director
+        - id
+      properties:
+        title:
+          type: string
+          example: The Martian
+        rating:
+          type: integer
+          example: 7
+        director:
+          type: string
+          example: Paul McGuigan
+        id:
+          type: string
+          example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
