@@ -10,7 +10,9 @@ HOST = '0.0.0.0'
 
 with open('{}/databases/users.json'.format("."), "r") as jsf:
     users = json.load(jsf)["users"]
-
+@app.route("/documentation", methods=['GET'])
+def user_documentation(userid):
+    return make_response(jsonify({"Error": "user not exist"}), 400)
 @app.route("/bookingsbyuserid/<userid>", methods=['GET'])
 def bookingsbyuserid(userid):
     for user in users:
