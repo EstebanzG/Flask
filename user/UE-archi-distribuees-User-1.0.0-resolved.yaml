@@ -5,20 +5,35 @@ servers: []
 info:
   description: This is the API of the Movie service
   version: "1.0.0"
-  title: Movie API
+  title: Booking API
   contact:
     email: esteban.gomez@imt-atlantique.fr
   license:
     name: GPL v3
     url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
 tags:
-  - name: admins
-    description: Secured Admin-only calls
   - name: developers
     description: Operations available to regular developers
 
 paths:
-  /bookingsbyuserid/{userid}:
+  /help:
+    get:
+      tags:
+        - developers
+      summary: help example
+      operationId: help
+      description: |
+        Nothing to do
+      responses:
+        '200':
+          description: HTML Help Documentation
+          content:
+            text/html:
+              schema:
+                type: string
+                example: /json get all database
+
+  /bookings_by_user_id/{userid}:
     get:
       tags:
         - developers
@@ -43,10 +58,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
-        '400':
-          description: bad input parameter
+        '401':
+          description: User don't have booking
+        '402':
+          description: User not exist
 
-  /bookingdetailsuserid/{userid}:
+  /bookings_details_by_user_id/{userid}:
     get:
       tags:
         - developers
@@ -71,8 +88,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookingDetails'
-        '400':
-          description: bad input parameter
+        '401':
+          description: User don't have booking
+        '402':
+          description: User not exist
 
 components:
   schemas:
