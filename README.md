@@ -29,4 +29,13 @@ TP ROUGE : x
 
 ### Documentation des routes des APIs
 * Movie
-`http://172.16.128.224:3200/help`
+`http://localhost:3200/help`
+* Booking
+`http://localhost:3201/help`
+* Showtimes
+`http://localhost:3202/help`
+* User
+`http://localhost:3203/help`
+
+Pour le TP Bleu nous avons ajouté dans les codes erreurs les routes pouvant aiguillé l'utilisateur à résoudre son problème.
+Chacun des services à également une route help qui lui indique toutes les routes possibles.

@@ -17,10 +17,12 @@ with open('{}/databases/movies.json'.format("."), "r") as jsf:
 def home():
     return make_response("<h1 style='color:blue'>Welcome to the Movie service!</h1>", 200)
 
+
 # Help route : GET : http://localhost:3200/help
 @app.route("/help", methods=['GET'])
 def help():
-    return make_response(render_template('help.html', body_text='This is my HTML help documentation for Movie service'), 200)
+    return make_response(render_template('help.html', body_text='This is my HTML help documentation for Movie service'),
+                         200)
 
 
 # Template route : GET : http://localhost:3200/template
@@ -101,6 +103,8 @@ def get_movie_by_rate():
         "title": "ArchiDistribute"
     }
 """
+
+
 @app.route("/movies/<movie_id>", methods=['POST'])
 def create_movie(movie_id):
     req = request.get_json()
@@ -124,6 +128,8 @@ def create_movie(movie_id):
         "title": "ArchiDistribute"
     }
 """
+
+
 @app.route("/movies/<movie_id>/<rate>", methods=['PUT'])
 def update_movie_rating(movie_id, rate):
     for movie in movies:
