@@ -1,21 +1,19 @@
 openapi: 3.0.0
 servers: []
-
 info:
   description: This is the API of the Movie service
-  version: "1.0.0"
+  version: 1.0.0
   title: Movie API
   contact:
     email: esteban.gomez@imt-atlantique.fr
   license:
     name: GPL v3
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
 tags:
   - name: admins
     description: Secured Admin-only calls
   - name: developers
     description: Operations available to regular developers
-
 paths:
   /:
     get:
@@ -32,8 +30,7 @@ paths:
             text/html:
               schema:
                 type: string
-                example: "<h1 style='color:blue'>Welcome to the Movie service!</h1>"
-
+                example: <h1 style='color:blue'>Welcome to the Movie service!</h1>
   /template:
     get:
       tags:
@@ -49,40 +46,54 @@ paths:
             text/html:
               schema:
                 type: string
-                example: "This is my HTML template for Movie service"
-
+                example: This is my HTML template for Movie service
+  /help:
+    get:
+      tags:
+        - developers
+      summary: help example
+      operationId: help
+      description: |
+        Nothing to do
+      responses:
+        '200':
+          description: HTML Help Documentation
+          content:
+            text/html:
+              schema:
+                type: string
+                example: /json get all database
   /json:
-      get:
-        tags:
-          - developers
-        summary: get the full JSON database
-        operationId: get_json
-        description: |
-          Nothing to do
-        responses:
-          '200':
-            description: full JSON
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/AllMovies'
-
-  /movies/{movieid}:
+    get:
+      tags:
+        - developers
+      summary: get the full JSON database
+      operationId: get_json
+      description: |
+        Nothing to do
+      responses:
+        '200':
+          description: full JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllMovies'
+  /movies/{movie_id}:
     get:
       tags:
         - developers
       summary: get the movie by its id
-      operationId: get_movie_byid
+      operationId: get_movie_by_id
       description: |
         By passing in the appropriate options, 
         you can get info of a Movie
       parameters:
-        - name: movieid
+        - name: movie_id
           in: path
           required: true
           description: Movie ID.
           schema:
-            type : string
+            type: string
             minimum: 1
             maximum: 1
       responses:
@@ -93,7 +104,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovieItem'
         '400':
-          description: Movie ID not found (NEW ROUTE).
+          description: Movie ID not found, you should create a movie by /movies/<movie_id> post route.
     post:
       tags:
         - admins
@@ -101,12 +112,12 @@ paths:
       operationId: create_movie
       description: Adds a movie to the system
       parameters:
-        - name: movieid
+        - name: movie_id
           in: path
           required: true
           description: Movie ID.
           schema:
-            type : string
+            type: string
             minimum: 1
             maximum: 1
       responses:
@@ -131,12 +142,12 @@ paths:
       operationId: delete_movie
       description: Deletes a movie to the system
       parameters:
-        - name: movieid
+        - name: movie_id
           in: path
           required: true
           description: Movie ID.
           schema:
-            type : string
+            type: string
             minimum: 1
             maximum: 1
       responses:
@@ -146,10 +157,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovieItem'
-        '409':
-          description: bad input parameter
-
-  /movies/{movieid}/{rate}:
+        '400':
+          description: movie ID not found, you should check movies by /json get route
+  /movies/{movie_id}/{rate}:
     put:
       tags:
         - developers
@@ -159,12 +169,12 @@ paths:
         By passing in the appropriate options, 
         you can change a Movie's rate
       parameters:
-        - name: movieid
+        - name: movie_id
           in: path
           required: true
           description: Movie id.
           schema:
-            type : string
+            type: string
             minimum: 1
             maximum: 1
         - name: rate
@@ -172,7 +182,7 @@ paths:
           required: true
           description: Movie new rate.
           schema:
-            type : number
+            type: number
             minimum: 1
             maximum: 1
       responses:
@@ -183,24 +193,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovieItem'
         '400':
-          description: bad input parameter (NEW ROUTE)
-
-  /moviesbytitle:
+          description: movie with this rate not found, you should check movies by /json get route
+  /movies_by_title:
     get:
       tags:
         - developers
       summary: get the movie by its name
-      operationId: get_movie_bytitle
+      operationId: get_movie_by_title
       description: |
         By passing in the appropriate options, 
         you can get info of a Movie
       parameters:
-        - name: movietitle
+        - name: movie_title
           in: query
           required: true
           description: Movie title.
           schema:
-            type : string
+            type: string
             minimum: 1
             maximum: 1
       responses:
@@ -211,24 +220,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovieItem'
         '400':
-          description: bad input parameter (NEW ROUTE)
-
-  /moviesbyrate:
+          description: Movie ID not found, you should create a movie by /movies/<movie_id> post route.
+  /movies_by_rate:
     get:
       tags:
         - developers
       summary: get the movie by its rate
-      operationId: get_movie_byrate
+      operationId: get_movie_by_rate
       description: |
         By passing in the appropriate options, 
         you can get info of Movies
       parameters:
-        - name: movierate
+        - name: movie_rate
           in: query
           required: true
           description: Movie rate.
           schema:
-            type : number
+            type: number
             minimum: 1
             maximum: 1
       responses:
@@ -239,7 +247,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovieItem'
         '400':
-          description: bad input parameter (NEW ROUTE)
+          description: movie with this rate not found, you should check movies by /json get route
 components:
   schemas:
     AllMovies:
