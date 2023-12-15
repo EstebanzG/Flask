@@ -1,3 +1,5 @@
+This is a school project made with Capucine BECHEMIN, we created Rest API using the Flask framework.
+
 gitlab link : https://gitlab.imt-atlantique.fr/c22beche/tp_rest.git
 
 
